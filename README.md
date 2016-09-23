@@ -88,7 +88,7 @@ transactions:
 
 Now go ahead and run the install script!
 
-```python install.py``
+```python install.py```
 
 ## Adding Categories and Keywords
 
