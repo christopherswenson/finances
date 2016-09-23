@@ -90,6 +90,8 @@ Now go ahead and run the install script!
 
 ```python install.py```
 
+Note: the install script creates a cron job that runs every hour. To change this behavior, answer "no" when the install script asks to automatically install the job, and manually install it with `crontab -e`. Replace the cron string with something more suitable for your needs. If you need help creating the cron string, [this tool](http://www.cronmaker.com/) is pretty helpful.
+
 ## Adding Categories and Keywords
 
 If you'd like, you can manually add categories and keywords to each of the produced transactions. Do this by editing the `transactions.csv` file that's produced. Next time the fetch script is run, these changes will be active in the database. Currently there's no way to get this data, so you'll have to do it manually for now.
