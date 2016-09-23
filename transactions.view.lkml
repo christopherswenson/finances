@@ -64,8 +64,17 @@ view: transactions {
     sql: ${TABLE}.plaid_account_id ;;
   }
 
-  # # # # # # # # # # # # # # # # # # # # # # #
-  # PAYEE DIMENSIONS
+  dimension: payee {
+    group_label: "Payee"
+    type: string
+    sql: ${TABLE}.payee ;;
+    drill_fields: [detail*, -payee]
+
+    link: {
+      label: "Google Search this Payee"
+      url: "https://www.google.com/search?q={{ value || encode_uri }}"
+    }
+  }
 
   dimension: amazon {
     group_label: "Payee"
@@ -80,34 +89,6 @@ view: transactions {
     sql: payee LIKE '%paypal%' ;;
     drill_fields: [detail*]
   }
-
-  dimension: payee {
-    group_label: "Payee"
-    type: string
-    sql: ${TABLE}.payee ;;
-    drill_fields: [detail*, -payee]
-
-    link: {
-      label: "Google Search this Payee"
-      url: "https://www.google.com/search?q={{ value || encode_uri }}"
-    }
-  }
-
-#   dimension: state {
-#     sql: CASE WHEN RIGHT(TRIM(${payee}), 2) IN (
-#         'AL', 'AK', 'AZ', 'AR', 'CA', 'CO', 'CT', 'DE', 'FL', 'GA',
-#         'HI', 'ID', 'IL', 'IN', 'IA', 'KS', 'KY', 'LA', 'ME', 'MD',
-#         'MA', 'MI', 'MN', 'MS', 'MO', 'MT', 'NE', 'NV', 'NH', 'NJ',
-#         'NM', 'NY', 'NC', 'ND', 'OH', 'OK', 'OR', 'PA', 'RI', 'SC',
-#         'SD', 'TN', 'TX', 'UT', 'VT', 'VA', 'WA', 'WV', 'WI', 'WY')
-#       THEN RIGHT(TRIM(${payee}), 2)
-#       ELSE NULL
-#     END ;;
-#     drill_fields: [detail*]
-#   }
-
-  # # # # # # # # # # # # # # # # # # # # # # #
-  # MEASURES
 
   measure: count {
     # distinct because symmetric aggregates

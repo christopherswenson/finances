@@ -61,6 +61,4 @@ view: accounts {
     type: string
     sql: ${TABLE}.type ;;
   }
-
-
 }
