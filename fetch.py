@@ -3,9 +3,11 @@
 import subprocess
 import json
 import csv
-import os.path
-from datetime import datetime
+import os
+from datetime import datetime, timedelta
+import time
 import sys
+import re
 
 def log(message):
   print("[log] " + message)
@@ -60,6 +62,7 @@ with open(path + "config", "r") as file:
 
 # Get database from config
 database = config.get("mysql_database", "finances")
+backup_hours = int(config.get("backup_hours", "12"))
 
 def escape(string):
   if "," in string:
@@ -103,9 +106,22 @@ def backup_transactions_csv():
   log("Backing up transactions csv file.")
   if not os.path.isdir(path + "backups"):
     subprocess.call(["mkdir", path + "backups"])
-  now = datetime.now().strftime('%Y-%m-%d@%H:%M:%S')
+  now = int(time.time())
   if os.path.isfile(path + "transactions.csv"):
-    subprocess.call(["cp", path + "transactions.csv", path + "backups/transactions-backup-%s.csv" % now])
+    subprocess.call(["cp", path + "transactions.csv", path + "backups/transactions-backup-%d.csv" % now])
+
+def delete_old_backups():
+  log("Deleting backups from before %d hours ago." % backup_hours)
+  for backup in os.listdir(path + "backups"):
+    match = re.match(r"^transactions\-backup\-(\d+)\.csv$", backup)
+    if not match:
+      match = re.match(r"^mysql\-backup\-(\d+)\.sql$", backup)
+    if match:
+      epoch = float(match.group(1))
+      created = datetime.fromtimestamp(epoch)
+      delta = datetime.now() - created
+      if delta > timedelta(hours = backup_hours):
+        os.remove(path + "backups/" + backup)
 
 def output_transactions_csv(transactions):
   log("Generating transactions csv file.")
@@ -153,8 +169,8 @@ def output_transactions_csv(transactions):
 def backup_mysql_data():
   log("Backing up mysql data.")
   backup = subprocess.check_output(mysqldump(config, database))
-  now = datetime.now().strftime('%Y-%m-%d@%H:%M:%S')
-  with open(path + "backups/mysql-backup-%s.sql" % now, "w") as file:
+  now = int(time.time())
+  with open(path + "backups/mysql-backup-%d.sql" % now, "w") as file:
     file.write(backup)
 
 def load_mysql_data_from_csvs():
@@ -198,5 +214,6 @@ def fetch_accounts_and_transactions():
   output_transactions_csv(response_json["transactions"])
   backup_mysql_data()
   load_mysql_data_from_csvs()
+  delete_old_backups()
 
 fetch_accounts_and_transactions()
