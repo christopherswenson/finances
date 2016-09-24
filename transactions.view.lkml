@@ -85,7 +85,7 @@ view: transactions {
   measure: count {
     # distinct because symmetric aggregates
     type: count
-    drill_fields: [id]
+    drill_fields: [detail*]
   }
 
   measure: total {
@@ -99,6 +99,7 @@ view: transactions {
       <font color="black">{{ rendered_value }}</font>
       {% endif %} ;;
     sql: ${amount} ;;
+    drill_fields: [detail*]
   }
 
   measure: average {
@@ -111,6 +112,7 @@ view: transactions {
       {% else %}
       <font color="black">{{ rendered_value }}</font>
       {% endif %} ;;
+    drill_fields: [detail*]
   }
 
   measure: max {
@@ -123,10 +125,11 @@ view: transactions {
       {% else %}
       <font color="black">{{ rendered_value }}</font>
       {% endif %} ;;
+    drill_fields: [detail*]
   }
 
   set: detail {
-    fields: [category, amount, keywords, period_date, posted_date, payee]
+    fields: [category, amount, keywords, posted_date, payee]
   }
 
 }
