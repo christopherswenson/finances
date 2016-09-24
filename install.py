@@ -70,7 +70,7 @@ if not config.has_key("plaid_access_token"):
     error("Config must provide a bank username (bank_username: [username]) or an access token (access_token: [token]).")
   if not config.has_key("bank_password"):
     error("Config must provide a bank password (bank_password: [password]) or an access token (access_token: [token]).")
-  if not config.has_key("bank_password"):
+  if not config.has_key("bank_type"):
     error("Config must provide a bank type (bank_type: [type]).")
 log("Config file read.")
 
