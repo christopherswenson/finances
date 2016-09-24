@@ -38,14 +38,6 @@ view: transactions {
     drill_fields: [detail*, -keywords]
   }
 
-  dimension_group: period {
-    type: time
-    timeframes: [date, week, month]
-    convert_tz: no
-    sql: ${TABLE}.period ;;
-    drill_fields: [detail*, -period_date]
-  }
-
   dimension_group: posted {
     type: time
     timeframes: [date, week, month, day_of_week, month_name, day_of_month]

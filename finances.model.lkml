@@ -16,11 +16,4 @@ explore: transactions {
   }
 }
 
-explore: keywords {
-  join: transactions {
-    foreign_key: keywords.transaction_id
-    relationship: many_to_one
-  }
-}
-
 explore: accounts {}
