@@ -144,7 +144,6 @@ log("Mysql connection verified.")
 
 # Ensure database exists, maybe create it.
 database = config.get("mysql_database", "finances")
-database = "asdffasdf"
 check_schemas = False
 try:
   test = mysql(config, "use " + database)
