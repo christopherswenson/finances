@@ -1,0 +1,31 @@
+# This is the configuration file that determines how the 
+# fetch and install scripts will run
+# Remove this item after you fill out your information
+template: delete me
+
+# Plaid information
+plaid_client_id: xxxxxxx
+plaid_secret: yyyyyyy
+
+# You must either provide bank_type, bank_password, and bank_username, or plaid_access token
+bank_type: bofa
+bank_username: aaaaaaa
+bank_password: bbbbbbb
+
+# Access token generated from Plaid
+plaid_access_token: zzzzzzz
+
+# Where the backups and intermediate csv files are stored,
+# and the location of the fetch script
+install_path: /some/absolute/path
+
+# Mysql login information for your configuration
+mysql_username: root
+mysql_password: password
+
+# The mysql database name to use
+mysql_database: finances # default 
+
+# How long old backups are kept
+backup_hours: 12
+
