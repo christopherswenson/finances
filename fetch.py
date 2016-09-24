@@ -32,11 +32,20 @@ def mysqldump(config, database):
   result.append(database)
   return result
 
+# Get current install path from config
+if len(sys.argv) < 2:
+  error("Please provide the current path as a command-line argument.")
+path = sys.argv[1]
+
+# Add a trailing slash if necessary
+if path[-1] != "/":
+  path += "/"
+
 # Read config file
-if not os.path.isfile("config"):
+if not os.path.isfile(path + "config"):
   error("Config file does not exist.")
 config = {}
-with open("config", "r") as file:
+with open(path + "config", "r") as file:
   lines = file.readlines()
   for line in lines:
     if len(line) < 1:
@@ -49,15 +58,6 @@ with open("config", "r") as file:
       error("Invalid config file syntax. Each line must be blank, a comment (#), or a key-value pair (key: value).")
     config[parts[0].strip()] = parts[1].strip()
 
-# Get current install path from config
-if len(sys.argv) < 2:
-  error("Please provide the current path as a command-line argumetn.")
-path = sys.argv[1]
-
-# Add a trailing slash if necessary
-if path[-1] != "/":
-  path += "/"
-
 # Get database from config
 database = config.get("mysql_database", "finances")
 
@@ -65,6 +65,18 @@ def escape(string):
   if "," in string:
     return "\"" + string + "\""
   return string
+
+def standardize_newlines():
+  with open(path + "transactions.csv", "r") as file:
+    lines = file.readlines()
+  with open(path + "transactions.csv", "w") as file:
+    for line in lines:
+      file.write(line.replace("\r\n", "\n"))
+  with open(path + "accounts.csv", "r") as file:
+    lines = file.readlines()
+  with open(path + "accounts.csv", "w") as file:
+    for line in lines:
+      file.write(line.replace("\r\n", "\n"))
 
 def output_accounts_csv(accounts):
   log("Generating accounts csv file.")
@@ -182,6 +194,7 @@ def fetch_accounts_and_transactions():
   response_json = json.loads(response)
   output_accounts_csv(response_json["accounts"])
   backup_transactions_csv()
+  standardize_newlines()
   output_transactions_csv(response_json["transactions"])
   backup_mysql_data()
   load_mysql_data_from_csvs()

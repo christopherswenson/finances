@@ -114,7 +114,12 @@ if not config.has_key("plaid_access_token"):
 # Create the cronjob file
 now = datetime.now().strftime('%Y-%m-%d@%H:%M:%S')
 cronjob = "/tmp/cronjob-finances-" + now
-croncontents = "0 * * * * " + path + "fetch.py " + path + " 2>&1 /dev/null\n\n"
+croncontents = ("""
+PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
+MAILTO=""
+0 * * * * %sfetch.py %s 2>&1 /dev/null
+0 * * * * env > %scronenv
+""" % (path, path, path)).strip() + "\n\n"
 with open(cronjob, "w") as cronfile:
   cronfile.write(croncontents)
 log("Cronjob file created.")
